@@ -1,23 +1,39 @@
 #include <iostream>
-#include "FunctionAnalysis.h"
+#include "RootFinder.h"         
+#include "FunctionAnalysis.h"   
 
-static double parabola(double x) { return (x - 2.0) * (x - 2.0) + 1.0; }
-static double hill(double x) { return -x * x + 4.0 * x; }
+double test_func(double x) {
+    return x * x - 4.0;
+}
+
+double test_deriv(double x) {
+    return 2.0 * x;
+}
 
 int main() {
-    double x = 0, fx = 0, v = 0;
+    std::cout << "=== Stage 3: Cross-Testing ===" << std::endl;
 
-    if (fa_findMinimum(parabola, 0, 5, 1e-9, 200, &x, &fx) == FA_OK)
-        std::cout << "min: x=" << x << " f=" << fx << "\n";
+    double root = 0.0;
+    int status_rf = rf_newton(test_func, test_deriv, 3.0, 1e-6, 100, &root);
 
-    if (fa_findMaximum(hill, 0, 5, 1e-9, 200, &x, &fx) == FA_OK)
-        std::cout << "max: x=" << x << " f=" << fx << "\n";
+    if (status_rf == 0) {
+        std::cout << "[Student A] RootFinder: Found root x = " << root << std::endl;
+    }
+    else {
+        std::cout << "[Student A] RootFinder Error: " << status_rf << std::endl;
+    }
 
-    if (fa_evaluate(parabola, 3.0, &v) == FA_OK)
-        std::cout << "f(3)=" << v << "\n";
+    double min_x = 0.0;
+    double min_val = 0.0;
+    int status_fa = fa_findMinimum(test_func, -5.0, 5.0, 1e-6, 100, &min_x, &min_val);
 
-    if (fa_derivative(parabola, 3.0, 1e-5, &v) == FA_OK)
-        std::cout << "f'(3)=" << v << "\n";
+    if (status_fa == 0) {
+        std::cout << "[Student B] FunctionAnalysis: Minimum at x = " << min_x
+            << ", f(x) = " << min_val << std::endl;
+    }
+    else {
+        std::cout << "[Student B] FunctionAnalysis Error: " << status_fa << std::endl;
+    }
 
     return 0;
 }
