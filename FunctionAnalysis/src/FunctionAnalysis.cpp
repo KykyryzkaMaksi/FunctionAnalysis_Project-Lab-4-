@@ -4,7 +4,6 @@
 namespace {
     bool bad(double v) { return !std::isfinite(v); }
 
-    // sign = +1 -> мінімум, sign = -1 -> максимум
     int golden(FA_Func f, double a, double b, double eps, int maxIter, double sign, double* xExt, double* fExt) {
         if (!f || !xExt || !fExt) return FA_ERR_NULL_ARG;
         if (bad(a) || bad(b) || a >= b) return FA_ERR_INVALID_INTERVAL;
@@ -69,4 +68,4 @@ extern "C" {
         return golden(f, a, b, eps, maxIter, -1.0, xExt, fExt);
     }
 
-} // extern "C"
+}
